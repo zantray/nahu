@@ -62,12 +62,39 @@
         .wiggle-hover:hover {
             animation: wiggle 0.5s ease-in-out infinite;
         }
+
+        /* Certificate Printing Style optimization */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            /* Hide everything except the certificate container */
+            body > * {
+                display: none !important;
+            }
+            #certificate-print-area {
+                display: flex !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                border: none !important;
+                box-shadow: none !important;
+                background: white !important;
+                visibility: visible !important;
+            }
+            #certificate-print-area * {
+                visibility: visible !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-sky-300 via-blue-200 to-indigo-300 min-h-screen flex flex-col justify-between overflow-x-hidden text-slate-800 selection:bg-yellow-300">
 
     <!-- Top Decorative Bar / Stats -->
-    <header class="p-4 flex justify-between items-center max-w-5xl mx-auto w-full">
+    <header class="p-4 flex flex-col md:flex-row gap-3 justify-between items-center max-w-5xl mx-auto w-full print:hidden">
         <!-- Logo / Title -->
         <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
             <span class="text-4xl">🚀</span>
@@ -75,7 +102,7 @@
         </div>
 
         <!-- Lives and Score Badge -->
-        <div class="flex items-center gap-3 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full border-4 border-blue-400 shadow-lg">
+        <div class="flex flex-wrap justify-center items-center gap-3 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full border-4 border-blue-400 shadow-lg">
             <!-- Nyawa (Hearts) -->
             <div class="flex items-center gap-1" id="heart-container">
                 <span class="text-xl md:text-2xl text-red-500">❤️</span>
@@ -89,29 +116,35 @@
                 <span id="header-score" class="text-yellow-600 font-extrabold text-lg">0</span>
                 <span id="cloud-status" class="text-xs text-green-600" title="تم الحفظ سحابياً">☁️</span>
             </div>
+            <div class="h-6 w-0.5 bg-blue-300"></div>
+            <!-- Live Rank HUD -->
+            <div class="text-indigo-900 font-bold text-sm md:text-base flex items-center gap-1 bg-yellow-100 px-3 py-1 rounded-full border border-yellow-300">
+                <span>🏆 مَوْقِعُكَ:</span>
+                <span id="header-rank" class="font-extrabold text-indigo-700 font-mono">#--</span>
+            </div>
         </div>
     </header>
 
     <!-- Main Board Wrapper -->
-    <main class="flex-grow flex items-center justify-center p-4 max-w-5xl mx-auto w-full">
+    <main class="flex-grow flex items-center justify-center p-4 max-w-5xl mx-auto w-full print:p-0">
         
         <!-- ================= SCREENS CONTAINER ================= -->
-        <div id="game-card" class="bg-white rounded-3xl border-8 border-yellow-400 shadow-2xl w-full p-6 md:p-8 relative overflow-hidden flex flex-col justify-between min-h-[520px]">
+        <div id="game-card" class="bg-white rounded-3xl border-8 border-yellow-400 shadow-2xl w-full p-6 md:p-8 relative overflow-hidden flex flex-col justify-between min-h-[520px] print:border-none print:shadow-none print:p-0">
             
             <!-- Floating Background Elements (SVGs for decoration) -->
-            <div class="absolute -top-12 -left-12 text-yellow-200 opacity-20 pointer-events-none text-8xl">☀️</div>
-            <div class="absolute -bottom-10 -right-10 text-white opacity-25 pointer-events-none text-9xl">☁️</div>
+            <div class="absolute -top-12 -left-12 text-yellow-200 opacity-20 pointer-events-none text-8xl print:hidden">☀️</div>
+            <div class="absolute -bottom-10 -right-10 text-white opacity-25 pointer-events-none text-9xl print:hidden">☁️</div>
 
             <!-- ================= SCREEN 0: SIGN IN / NAME REGISTRATION ================= -->
-            <div id="screen-auth" class="flex flex-col items-center text-center space-y-6 py-6">
+            <div id="screen-auth" class="flex flex-col items-center text-center space-y-6 py-6 print:hidden">
                 <div class="floating-element text-8xl mb-2">😺</div>
                 <h2 class="text-3xl md:text-4xl font-black text-indigo-900">مَرْحَبًا بِكَ يَا بَطَلُ!</h2>
                 <p class="text-lg text-slate-600 max-w-md font-medium">
-                    اُكْتُبِ اسْمَكَ الْكَرْتُونِيَّ لِتَبْدَأَ الْمُغَامَرَةَ وَتُسَجِّلَ نُقَاطَكَ فِي لَوْحَةِ الصَّدَارَةِ الْعَالَمِيَّةِ!
+                    اُكْتُبِ اسْمَكَ الْكَرْتُونِيَّ لِتَبْدَأَ الْمُغَامَرَةَ الْإِلِكْتُرُونِيَّةَ وَتُسَجِّلَ نُقَاطَكَ لِتُنَافِسَ أَصْدِقَاءَكَ!
                 </p>
 
                 <div class="w-full max-w-sm space-y-4">
-                    <input type="text" id="player-nickname" placeholder="اُكْتُبِ اسْمَكَ هُنَا..." class="w-full px-4 py-3 rounded-2xl border-4 border-indigo-200 focus:border-indigo-500 text-center text-xl font-bold focus:outline-none shadow-inner" maxlength="15">
+                    <input type="text" id="player-nickname" placeholder="اُكْتُبِ اسْمَكَ هُنَا..." class="w-full px-4 py-3 rounded-2xl border-4 border-indigo-200 focus:border-indigo-500 text-center text-xl font-bold focus:outline-none shadow-inner animate-bounce-short" maxlength="15">
                     
                     <button onclick="registerPlayer()" class="w-full bubbly-button bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xl py-3.5 px-8 rounded-2xl border-b-4 border-indigo-900 transform hover:scale-105 transition-all">
                         دُخُولُ الْمُغَامَرَةِ 🌟
@@ -121,10 +154,16 @@
             </div>
 
             <!-- ================= SCREEN 1: WELCOME MENU ================= -->
-            <div id="screen-menu" class="hidden flex flex-col items-center text-center space-y-6 py-4">
-                <div class="flex items-center gap-2 bg-yellow-100 text-yellow-800 font-bold px-4 py-1.5 rounded-full text-sm">
-                    <span>👋 أَهْلًا يَا بَطَلُ:</span>
-                    <span id="welcome-username" class="underline">...</span>
+            <div id="screen-menu" class="hidden flex flex-col items-center text-center space-y-6 py-4 print:hidden">
+                <div class="flex flex-wrap justify-center items-center gap-2">
+                    <div class="flex items-center gap-2 bg-yellow-100 text-yellow-800 font-bold px-4 py-1.5 rounded-full text-sm border border-yellow-200">
+                        <span>👋 أَهْلًا يَا بَطَلُ:</span>
+                        <span id="welcome-username" class="underline font-black">...</span>
+                    </div>
+                    <div id="badge-mistakes-record" onclick="showMistakesScreen()" class="hidden cursor-pointer flex items-center gap-1.5 bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold px-4 py-1.5 rounded-full text-sm border border-rose-300 animate-pulse transition-all">
+                        <span>📝 سِجِلُّ أَخْطَائِكَ:</span>
+                        <span id="mistakes-count" class="font-mono font-extrabold text-rose-600">0</span>
+                    </div>
                 </div>
                 <div class="floating-element text-8xl mb-2">🐱</div>
                 <h2 class="text-3xl md:text-5xl font-black text-indigo-900 drop-shadow-sm">تَعَلَّمْ <span class="text-rose-500 underline decoration-wavy">الْمَفْعُولَ فِيهِ</span>!</h2>
@@ -141,13 +180,18 @@
                     </button>
                 </div>
 
-                <button onclick="showLeaderboard()" class="bubbly-button bubbly-purple bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-lg py-3 px-8 rounded-2xl border-b-4 border-purple-800 flex items-center justify-center gap-2 max-w-xs w-full">
-                    🏆 لَوْحَةُ الصَّدَارَةِ الْعَالَمِيَّةِ
-                </button>
+                <div class="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-lg">
+                    <button onclick="showLeaderboard()" class="bubbly-button bubbly-purple bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-lg py-3 px-8 rounded-2xl border-b-4 border-purple-800 flex items-center justify-center gap-2 w-full sm:w-1/2">
+                        🏆 لَوْحَةُ الصَّدَارَةِ
+                    </button>
+                    <button id="menu-btn-mistakes" class="hidden bubbly-button bg-rose-500 hover:bg-rose-400 text-white font-extrabold text-lg py-3 px-8 rounded-2xl border-b-4 border-rose-850 flex items-center justify-center gap-2 w-full sm:w-1/2" onclick="showMistakesScreen()">
+                        📝 مَكْسَبُ الْأَخْطَاءِ
+                    </button>
+                </div>
             </div>
 
             <!-- ================= SCREEN 2: STUDY / REVISION GUIDE ================= -->
-            <div id="screen-study" class="hidden flex-col justify-between h-full space-y-6">
+            <div id="screen-study" class="hidden flex-col justify-between h-full space-y-6 print:hidden">
                 <!-- Mascot Speech -->
                 <div class="flex items-start gap-4 bg-yellow-50 p-4 rounded-2xl border-4 border-yellow-300">
                     <span class="text-5xl floating-element">🐱</span>
@@ -176,10 +220,10 @@
             </div>
 
             <!-- ================= SCREEN 3: LEVEL SELECTOR ================= -->
-            <div id="screen-levels" class="hidden flex-col items-center space-y-6 py-4">
+            <div id="screen-levels" class="hidden flex-col items-center space-y-6 py-4 print:hidden">
                 <div class="text-center">
                     <h3 class="text-2xl md:text-4xl font-extrabold text-indigo-900">خَرِيطَةُ التَّحَدِّي</h3>
-                    <p class="text-slate-600 text-sm md:text-base font-medium">أَكْمِلِ الْمُسْتَوَيَاتِ لِتُصْبِحَ بَطَلَ الْمَفْعُولِ فِيهِ!</p>
+                    <p class="text-slate-600 text-sm md:text-base font-medium">أَكْمِلِ الْمُسْتَوَيَاتِ لِتُصْبِحَ بَطَلَ الْمَفْعُولِ فِيهِ وَتَطْبَعَ شَهَادَتَكَ الْكُبْرَى!</p>
                 </div>
 
                 <!-- Visual Roadmap (Kid style grid) -->
@@ -229,7 +273,7 @@
             </div>
 
             <!-- ================= SCREEN 4: GAMEPLAY PANEL ================= -->
-            <div id="screen-gameplay" class="hidden flex-col justify-between h-full space-y-4">
+            <div id="screen-gameplay" class="hidden flex-col justify-between h-full space-y-4 print:hidden">
                 <!-- Level HUD -->
                 <div class="flex justify-between items-center border-b-2 border-slate-100 pb-2">
                     <div>
@@ -266,7 +310,7 @@
             </div>
 
             <!-- ================= SCREEN 5: GAME OVER / STUDY MANDATORY ================= -->
-            <div id="screen-game-over" class="hidden flex-col items-center text-center space-y-6 py-8">
+            <div id="screen-game-over" class="hidden flex-col items-center text-center space-y-6 py-8 print:hidden">
                 <span class="text-8xl floating-element">😿</span>
                 <h3 class="text-3xl md:text-4xl font-black text-rose-600">لَقَدْ نَفِدَتْ حَيَاتُكَ!</h3>
                 <p class="text-slate-600 max-w-md text-base md:text-lg font-semibold">
@@ -274,10 +318,13 @@
                 </p>
 
                 <!-- Visual Guardrail Information -->
-                <div class="bg-rose-50 border-2 border-rose-200 rounded-2xl p-4 max-w-md">
+                <div class="bg-rose-50 border-2 border-rose-200 rounded-2xl p-4 max-w-md space-y-2">
                     <p class="text-xs text-rose-800 font-bold">
                         ⚠️ قَانُونُ الْمُغَامَرَةِ: يَجِبُ عَلَيْكَ إِكْمَالُ كُلِّ صَفَحَاتِ الْمُرَاجَعَةِ لِتَتَمَكَّنَ مِنْ فَتْحِ اللَّعِبِ مَرَّةً أُخْرَى!
                     </p>
+                    <button onclick="showMistakesScreen()" class="text-xs text-indigo-700 underline font-bold hover:text-indigo-900 block mx-auto">
+                        🔍 اِعْرِضْ تَقْرِيرَ الْأَخْطَاءِ الَّتِي ارْتَكَبْتَهَا (سِجِلٌّ تَقْرِيرِيٌّ)
+                    </button>
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-md">
@@ -291,7 +338,7 @@
             </div>
 
             <!-- ================= SCREEN 6: VICTORY SCREEN ================= -->
-            <div id="screen-victory" class="hidden flex-col items-center text-center space-y-6 py-6">
+            <div id="screen-victory" class="hidden flex-col items-center text-center space-y-6 py-6 print:hidden">
                 <span class="text-8xl floating-element">🎉👑</span>
                 <h3 class="text-3xl md:text-5xl font-black text-green-600 drop-shadow-sm">رَائِعٌ جِدًّا! بَطَلٌ حَقِيقِيٌّ!</h3>
                 <p id="victory-message" class="text-slate-600 max-w-md text-base md:text-lg font-semibold">
@@ -307,6 +354,14 @@
                     </div>
                 </div>
 
+                <!-- Custom Actions for Final Stage / Certify -->
+                <div id="victory-certify-option" class="hidden bg-emerald-50 border-4 border-emerald-300 p-4 rounded-2xl max-w-md w-full animate-pulse">
+                    <p class="text-emerald-950 font-extrabold text-base mb-2">🥳 لَقَدْ أَكْمَلْتَ كُلَّ الْمَرَاحِلِ يَا بَطَلُ!</p>
+                    <button onclick="generateAndShowCertificate()" class="w-full bubbly-button bubbly-green bg-green-500 hover:bg-green-400 text-white font-extrabold text-lg py-3 rounded-xl">
+                        🎓 اِحْصُلْ عَلَى شَهَادَتِكَ الْآنَ! 📜
+                    </button>
+                </div>
+
                 <div class="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-md">
                     <button onclick="goToLevelSelect()" class="bubbly-button bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-lg py-3.5 px-8 rounded-2xl flex items-center justify-center gap-2">
                         🗺️ خَرِيطَةُ الْمُسْتَوَيَاتِ
@@ -318,7 +373,7 @@
             </div>
 
             <!-- ================= SCREEN 7: GLOBAL LEADERBOARD ================= -->
-            <div id="screen-leaderboard" class="hidden flex-col items-center space-y-4 py-4">
+            <div id="screen-leaderboard" class="hidden flex-col items-center space-y-4 py-4 print:hidden">
                 <div class="text-center">
                     <span class="text-5xl">👑</span>
                     <h3 class="text-2xl md:text-4xl font-extrabold text-indigo-900 mt-1">لَوْحَةُ الصَّدَارَةِ الْعَالَمِيَّةِ</h3>
@@ -353,11 +408,88 @@
                 </div>
             </div>
 
+            <!-- ================= SCREEN 8: WRONG ANSWERS LOG (سجل الأخطاء) ================= -->
+            <div id="screen-mistakes" class="hidden flex-col items-center space-y-4 py-4 print:hidden">
+                <div class="text-center">
+                    <span class="text-5xl">📝</span>
+                    <h3 class="text-2xl md:text-4xl font-extrabold text-rose-900 mt-1">سِجِلُّ أَخْطَائِكَ التَّعْلِيمِيِّ</h3>
+                    <p class="text-slate-600 text-xs md:text-sm font-medium">قَائِمَةٌ بِمَا ارْتَكَبْتَ مِنَ الْأَخْطَاءِ لِتُرَاجِعَهَا مَعَ الْمُعَلِّمِ مِيُو كَيْ لَا تُكَرِّرَهَا!</p>
+                </div>
+
+                <!-- Mistakes Scrollable Box -->
+                <div class="w-full max-w-2xl bg-rose-50 rounded-2xl border-4 border-rose-200 overflow-hidden shadow-inner flex-grow min-h-[250px] max-h-[300px] overflow-y-auto p-4 space-y-3" id="mistakes-log-container">
+                    <!-- Dynamic mistakes rows injected here -->
+                </div>
+
+                <div class="flex gap-4 w-full justify-center max-w-md pt-2">
+                    <button onclick="goHome()" class="bubbly-button bg-slate-500 hover:bg-slate-400 text-white font-bold py-2.5 px-6 rounded-xl text-sm w-full">
+                        🏠 الْعَوْدَةُ لِلرَّئِيسِيَّةِ
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= SCREEN 9: CERTIFICATE GENERATOR ================= -->
+            <div id="screen-certificate" class="hidden flex-col items-center space-y-6 py-4">
+                <!-- Instruction bar -->
+                <div class="text-center print:hidden">
+                    <span class="text-5xl animate-bounce">🎓</span>
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-teal-900 mt-1">شَهَادَةُ التَّخَرُّجِ لِلْمَفْعُولِ فِيهِ</h3>
+                    <p class="text-slate-500 text-xs md:text-sm">هَنِيئًا لَكَ! يُمْكِنُكَ الْآنَ طِبَاعَةُ شَهَادَتِكَ أَوْ تَعْلِيقُهَا فِي غُرْفَتِكَ!</p>
+                </div>
+
+                <!-- Printable Area -->
+                <div id="certificate-print-area" class="w-full max-w-2xl bg-white border-8 border-double border-yellow-500 rounded-3xl p-6 md:p-10 shadow-2xl relative text-center flex flex-col justify-between min-h-[450px]">
+                    <!-- Border decor elements -->
+                    <div class="absolute top-2 left-2 text-3xl">🐾</div>
+                    <div class="absolute top-2 right-2 text-3xl">🐾</div>
+                    <div class="absolute bottom-2 left-2 text-3xl">🐾</div>
+                    <div class="absolute bottom-2 right-2 text-3xl">🐾</div>
+
+                    <div class="space-y-4">
+                        <div class="text-teal-600 font-extrabold text-lg uppercase tracking-widest">شَهَادَةُ شَرَفٍ وَتَقْدِيرٍ</div>
+                        <h2 class="text-3xl md:text-4xl font-black text-amber-600 drop-shadow-sm">بَطَلُ قَوَاعِدِ اللُّغَةِ الْعَرَبِيَّةِ 🏆</h2>
+                        <div class="w-24 h-1 bg-yellow-400 mx-auto rounded-full"></div>
+                    </div>
+
+                    <div class="py-6 space-y-3">
+                        <p class="text-slate-500 text-base font-bold">بِكُلِّ فَخْرٍ وَاعْتِزَارٍ، يَشْهَدُ الْمُعَلِّمُ مِيُو 🐱 بِأَنَّ الْبَطَلَ:</p>
+                        <h1 id="cert-player-name" class="text-3xl md:text-4xl font-black text-indigo-900 underline decoration-yellow-400 decoration-wavy py-2">---</h1>
+                        <p class="text-slate-600 max-w-md mx-auto text-sm md:text-base font-semibold leading-relaxed">
+                            قَدْ أَكْمَلَ بِنَجَاحٍ بَاهِرٍ وَتَفَوُّقٍ جَمِيعَ مَرَاحِلِ وَتَحَدِّيَاتِ <br/>
+                            <span class="text-rose-500 font-extrabold">"مُغَامَرَةِ الْمَفْعُولِ فِيهِ (ظَرْفَا الزَّمَانِ وَالْمَكَانِ)"</span> <br/>
+                            وَبَرْهَنَ عَلَى أَنَّهُ مُحَقِّقٌ لُغَوِيٌّ عَبْقَرِيٌّ!
+                        </p>
+                    </div>
+
+                    <div class="flex justify-between items-end border-t-2 border-dashed border-yellow-200 pt-6">
+                        <div class="text-right text-xs text-slate-400 font-bold">
+                            <div>النُّقَاطُ الْمُكْتَسَبَةُ: <span id="cert-score" class="text-yellow-600 text-lg font-black">---</span></div>
+                            <div>الرُّتْبَةُ السَّحَابِيَّةُ: <span id="cert-rank" class="text-indigo-600 text-sm font-black">#--</span></div>
+                            <div class="mt-1">التَّارِيخُ: <span id="cert-date" class="font-mono">--/--/----</span></div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-4xl floating-element">👑</span>
+                            <div class="text-xs font-black text-indigo-900 mt-1">تَوْقِيعُ الْمُعَلِّمِ مِيُو 🐾</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Print actions -->
+                <div class="flex gap-4 w-full justify-center max-w-md pt-2 print:hidden">
+                    <button onclick="window.print()" class="bubbly-button bubbly-green bg-green-500 hover:bg-green-400 text-white font-extrabold text-lg py-3 px-8 rounded-xl flex items-center justify-center gap-2 w-full sm:w-1/2">
+                        🖨️ اِطْبَعِ الشَّهَادَةَ
+                    </button>
+                    <button onclick="goHome()" class="bubbly-button bg-slate-500 hover:bg-slate-400 text-white font-bold py-3 px-8 rounded-xl text-sm w-full sm:w-1/2">
+                        🏠 الْعَوْدَةُ لِلرَّئِيسِيَّةِ
+                    </button>
+                </div>
+            </div>
+
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="p-4 text-center text-xs text-blue-900/60 font-semibold max-w-5xl mx-auto w-full">
+    <footer class="p-4 text-center text-xs text-blue-900/60 font-semibold max-w-5xl mx-auto w-full print:hidden">
         صُنِعَ بِحُبٍّ لِأَطْفَالِنَا الْأَعِزَّاءِ لِتَعَلُّمِ اللُّغَةِ الْعَرَبِيَّةِ بِطَرِيقَةٍ مُمْتِعَةٍ! © 2026.
     </footer>
 
@@ -417,10 +549,17 @@
                     window.unlockedLevels = data.unlockedLevels || [1];
                     window.completedRevisionOnce = data.completedRevisionOnce || false;
 
+                    // Sync wrong answers if stored on cloud
+                    if (data.wrongAnswersRecord) {
+                        window.wrongAnswersRecord = data.wrongAnswersRecord;
+                        updateMistakesCountUI();
+                    }
+
                     document.getElementById("welcome-username").innerText = window.nickname;
                     document.getElementById("header-score").innerText = window.score;
                     
                     window.showScreen("screen-menu");
+                    await recalculateRealtimeRank();
                 } else {
                     window.showScreen("screen-auth");
                 }
@@ -444,13 +583,46 @@
                     score: window.score,
                     unlockedLevels: window.unlockedLevels,
                     completedRevisionOnce: window.completedRevisionOnce,
+                    wrongAnswersRecord: window.wrongAnswersRecord || [],
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
                 
                 document.getElementById("cloud-status").innerText = "☁️";
+                await recalculateRealtimeRank();
             } catch (err) {
                 console.error("Cloud save failed:", err);
                 document.getElementById("cloud-status").innerText = "❌";
+            }
+        }
+
+        async function recalculateRealtimeRank() {
+            if (!window.firebaseInitialized) return;
+            try {
+                const ldrCollection = collection(db, 'artifacts', appId, 'public', 'data', 'leaderboard');
+                const querySnapshot = await getDocs(ldrCollection);
+                const playersList = [];
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.name) {
+                        playersList.push({
+                            id: doc.id,
+                            score: data.score || 0
+                        });
+                    }
+                });
+
+                playersList.sort((a, b) => b.score - a.score);
+                if (auth.currentUser) {
+                    const myId = auth.currentUser.uid;
+                    const index = playersList.findIndex(p => p.id === myId);
+                    if (index !== -1) {
+                        window.myRankNum = index + 1;
+                        document.getElementById("header-rank").innerText = `#${window.myRankNum}`;
+                    }
+                }
+            } catch (err) {
+                console.warn("Failed real-time rank count:", err);
             }
         }
 
@@ -520,6 +692,8 @@
                     
                     if (myRankIdx !== -1) {
                         const rankNum = myRankIdx + 1;
+                        window.myRankNum = rankNum; // Sync locally
+                        document.getElementById("header-rank").innerText = `#${rankNum}`;
                         statusBox.innerHTML = `رُتْبَتُكَ الْعَالَمِيَّةُ الْآنَ هِيَ: <span class="text-xl text-indigo-700 font-extrabold font-mono">#${rankNum}</span> مِنْ بَيْنِ <span class="font-mono">${playersList.length}</span> بَطَلًا! 🚀`;
                     } else {
                         statusBox.innerText = "اِلْعَبْ لِتُسَجِّلَ اسْمَكَ فِي لَوْحَةِ الصَّدَارَةِ!";
@@ -538,6 +712,7 @@
         window.loadPlayerProfileFromCloud = loadPlayerProfileFromCloud;
         window.saveProgressToCloud = saveProgressToCloud;
         window.fetchAndRenderLeaderboard = fetchAndRenderLeaderboard;
+        window.recalculateRealtimeRank = recalculateRealtimeRank;
 
         // Trigger sign in on window load
         window.addEventListener('load', async () => {
@@ -605,6 +780,8 @@
         window.revisionLockActive = false; 
         window.completedRevisionOnce = false; 
         window.nickname = "";
+        window.wrongAnswersRecord = []; // List of custom mistakes
+        window.myRankNum = "--";
 
         // --- STUDY SLIDES DATA (FULLY ARABIC FOR IMMERSION) ---
         const studySlides = [
@@ -931,17 +1108,19 @@
             document.getElementById("screen-game-over").classList.add("hidden");
             document.getElementById("screen-victory").classList.add("hidden");
             document.getElementById("screen-leaderboard").classList.add("hidden");
+            document.getElementById("screen-mistakes").classList.add("hidden");
+            document.getElementById("screen-certificate").classList.add("hidden");
 
             // Show target
             document.getElementById(screenId).classList.remove("hidden");
             window.currentScreen = screenId;
 
-            // Trigger confetti if victory screen
-            if (screenId === 'screen-victory') {
+            // Trigger confetti if victory or certificate screen
+            if (screenId === 'screen-victory' || screenId === 'screen-certificate') {
                 confetti({
-                    particleCount: 120,
-                    spread: 80,
-                    origin: { y: 0.6 }
+                    particleCount: 150,
+                    spread: 90,
+                    origin: { y: 0.65 }
                 });
             }
         }
@@ -1177,6 +1356,9 @@
                 window.lives--;
                 updateHearts();
                 
+                // Track and record mistake
+                recordWrongAnswer(q, chosenIdx);
+
                 feedbackBar.className = "flex items-center gap-3 bg-rose-50 border-2 border-rose-300 p-3 rounded-xl";
                 feedbackMascot.innerText = "😿";
                 feedbackText.innerHTML = `<span class="font-extrabold text-rose-800">خَطَأٌ بَسِيطٌ!</span> <br/> ${q.hint}`;
@@ -1193,6 +1375,82 @@
                 }
             }
             await window.saveProgressToCloud();
+        }
+
+        // Mistakes Logger
+        function recordWrongAnswer(questionObj, chosenIdx) {
+            if (!window.wrongAnswersRecord) {
+                window.wrongAnswersRecord = [];
+            }
+            
+            // Check if this question is already in wrong records
+            const alreadyLogged = window.wrongAnswersRecord.some(item => item.questionText === questionObj.textAr);
+            
+            if (!alreadyLogged) {
+                window.wrongAnswersRecord.push({
+                    level: window.currentLevel,
+                    questionText: questionObj.textAr,
+                    translation: questionObj.textMs,
+                    chosenAnswer: questionObj.answers[chosenIdx],
+                    correctAnswer: questionObj.answers[questionObj.correct],
+                    hint: questionObj.hint,
+                    timestamp: new Date().toLocaleTimeString('ar-EG')
+                });
+            }
+            
+            updateMistakesCountUI();
+        }
+
+        function updateMistakesCountUI() {
+            const count = window.wrongAnswersRecord ? window.wrongAnswersRecord.length : 0;
+            document.getElementById("mistakes-count").innerText = count;
+            
+            const badge = document.getElementById("badge-mistakes-record");
+            const btnMenu = document.getElementById("menu-btn-mistakes");
+            
+            if (count > 0) {
+                badge.classList.remove("hidden");
+                if (btnMenu) btnMenu.classList.remove("hidden");
+            } else {
+                badge.classList.add("hidden");
+                if (btnMenu) btnMenu.classList.add("hidden");
+            }
+        }
+
+        function showMistakesScreen() {
+            showScreen("screen-mistakes");
+            const container = document.getElementById("mistakes-log-container");
+            container.innerHTML = "";
+
+            if (!window.wrongAnswersRecord || window.wrongAnswersRecord.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-500 font-medium">
+                        <span class="text-6xl block mb-2">⭐</span>
+                        لَا يُوجَدُ أَخْطَاءٌ مُسَجَّلَةٌ بَعْدُ! أَنْتَ مُمْتَازٌ حَقًّا!
+                    </div>
+                `;
+                return;
+            }
+
+            window.wrongAnswersRecord.forEach((item, idx) => {
+                const itemDiv = document.createElement("div");
+                itemDiv.className = "bg-white border-2 border-rose-100 p-4 rounded-xl space-y-2 shadow-sm text-right relative";
+                itemDiv.innerHTML = `
+                    <div class="absolute top-2 left-2 bg-rose-100 text-rose-700 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                        المستوى ${item.level}
+                    </div>
+                    <div class="text-xs text-slate-400 font-bold">خطأ رقم ${idx + 1}</div>
+                    <h4 class="text-xl font-extrabold text-rose-900">${item.questionText} <span class="text-xs text-slate-400 font-normal block md:inline">${item.translation}</span></h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs md:text-sm font-semibold">
+                        <div class="text-rose-600">🔴 إِجَابَتُكَ: <span class="font-extrabold underline">${item.chosenAnswer}</span></div>
+                        <div class="text-teal-600 font-extrabold">🟢 الصَّحِيحُ: <span>${item.correctAnswer}</span></div>
+                    </div>
+                    <div class="bg-amber-50 p-2 rounded-lg border border-amber-200 text-xs text-amber-900 font-bold mt-1">
+                        💡 نصيحة ميو: ${item.hint}
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
         }
 
         function nextQuestion() {
@@ -1250,14 +1508,32 @@
             }
 
             const btnNext = document.getElementById("btn-next-level-victory");
+            const certifyOption = document.getElementById("victory-certify-option");
+
+            // If Level 4 is completed, showcase completion & certificate print option
             if (window.currentLevel >= 4) {
                 btnNext.classList.add("hidden");
+                certifyOption.classList.remove("hidden");
             } else {
                 btnNext.classList.remove("hidden");
+                certifyOption.classList.add("hidden");
             }
 
             showScreen("screen-victory");
             await window.saveProgressToCloud();
+        }
+
+        function generateAndShowCertificate() {
+            document.getElementById("cert-player-name").innerText = window.nickname || "البطل الصغير";
+            document.getElementById("cert-score").innerText = window.score;
+            document.getElementById("cert-rank").innerText = window.myRankNum || "#--";
+            
+            // Format current date nicely in Arabic style
+            const today = new Date();
+            const ArabicDate = today.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById("cert-date").innerText = ArabicDate;
+
+            showScreen("screen-certificate");
         }
 
         function playNextLevel() {
